@@ -1,0 +1,17 @@
+server:
+  port:
+    44880
+
+spring:
+  application:
+    name: Runner
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: postgres
+    url: jdbc:postgresql://localhost:5432/postgres?createDatabaseIfNotExist=true
+  jpa:
+    hibernate:
+      ddl-auto: create
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
