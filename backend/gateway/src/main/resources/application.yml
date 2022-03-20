@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: gateway-service
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      routes:
+        - id: runner
+          uri: lb://runner
+          predicates:
+            - Path=/api/runner/**
+        - id: task-checker
+          uri: lb://taskchecker
+          predicates:
+            - Path=/api/checker/**
+        - id: task-store
+          uri: lb://taskstore
+          predicates:
+            - Path=/api/task/**
