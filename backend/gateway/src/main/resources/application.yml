@@ -1,3 +1,6 @@
+server:
+  port: 80
+
 spring:
   application:
     name: gateway-service
@@ -19,3 +22,7 @@ spring:
           uri: lb://taskstore
           predicates:
             - Path=/api/task/**
+        - id: auth-service
+          uri: lb://auth-service
+          predicates:
+            - Path=/api/auth/**
