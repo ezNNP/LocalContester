@@ -1,11 +1,31 @@
 server:
-  port: 80
+  port: 8081
+
+app:
+  config:
+    keycloak:
+      url: http://localhost:8080/auth
+      realm: simple-contester
 
 spring:
+  web:
+    resources:
+      static-locations[0]: "file:src/main/resources/static/"
+      static-locations[1]: "classpath:/static/"
   application:
     name: gateway-service
   cloud:
     gateway:
+      globalcors:
+        corsConfigurations:
+          '[/*]':
+            allowedOrigins: "*"
+            allowedMethods:
+              - GET
+              - POST
+            allowedHeaders: "*"
+      default-filters:
+        - TokenRelay
       discovery:
         locator:
           enabled: true
@@ -19,10 +39,32 @@ spring:
           predicates:
             - Path=/api/checker/**
         - id: task-store
-          uri: lb://taskstore
+          uri: lb://TaskStore
           predicates:
             - Path=/api/task/**
         - id: auth-service
           uri: lb://auth-service
           predicates:
             - Path=/api/auth/**
+  security:
+    oauth2:
+      client:
+        provider:
+          keycloak:
+            issuer-uri: http://localhost:8080/realms/simple-contester
+            user-name-attribute: preferred_username
+        registration:
+          sc_backend:
+            provider: keycloak
+            client-id: sc_backend
+            client-secret: AKLxHNuLR9nLsVwnbVne6IX1OBWUkjrI
+            authorization-grant-type: authorization_code
+            redirect-uri: "{baseUrl}/login/oauth2/code/keycloak"
+      resourceserver:
+        jwt:
+          jwk-set-uri: ${app.config.keycloak.url}/realms/${app.config.keycloak.realm}/protocol/openid-connect/certs
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

@@ -2,12 +2,12 @@ services:
   postgres:
     image: postgres:14.2
     environment:
-      POSTGRES_DB: 'SC'
+      POSTGRES_DB: 'postgres'
       POSTGRES_USER: 'simple_contester'
       POSTGRES_PASSWORD: 'postgres_pwd'
       PGDATA: '/var/lib/postgresql/data/pgdata'
     volumes:
-      - ./data:/var/lib/postgresql/data
+      - ./data/pg:/var/lib/postgresql/data
     ports:
       - "5432:5432"
     restart: unless-stopped
@@ -18,6 +18,37 @@ services:
           memory: 4G
     networks:
       - postgres
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:18.0.0
+    environment:
+      KEYCLOAK_ADMIN: 'admin'
+      KEYCLOAK_ADMIN_PASSWORD: 'admin'
+    volumes:
+      - ./data/keycloak:/opt/jboss/keycloak/standalone/data
+    ports:
+      - 8081:8080
+
+  eureka:
+    build: backend/eureka-server
+    ports:
+      - 8761:8761
+  gateway:
+    build: backend/gateway
+    ports:
+      - 8080:8080
+  runner:
+    build: backend/runner
+    ports:
+      - 44880:44880
+  checker:
+    build: backend/task-checker
+    ports:
+      - 44881:44881
+  store:
+    build: backend/task-store
+    ports:
+      - 44882:44882
 
 networks:
   postgres:

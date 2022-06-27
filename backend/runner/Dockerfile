@@ -1,7 +1,7 @@
 FROM openjdk:8-alpine
 
-COPY build/libs/*.jar app.jar
+COPY build/libs/*.jar runner.jar
 
 EXPOSE 44880
 
-ENTRYPOINT ["java", "-jar", "/app.jar"]
+ENTRYPOINT ["java", "-jar", "/runner.jar"]

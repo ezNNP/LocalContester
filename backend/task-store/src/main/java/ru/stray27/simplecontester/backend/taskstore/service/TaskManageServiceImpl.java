@@ -24,6 +24,11 @@ public class TaskManageServiceImpl implements TaskManageService {
     private TaskTestRepository taskTestRepository;
 
     @Override
+    public List<TaskDto> getAllTasks() {
+        return taskRepository.findAll().stream().map((task) -> TaskDto.builder().id(task.getId()).title(task.getTitle()).description(task.getDescription()).build()).collect(Collectors.toList());
+    }
+
+    @Override
     @Transactional
     public Task saveTaskFromRequest(TaskCreateRequest request) {
         if (isRequestValid(request)) {

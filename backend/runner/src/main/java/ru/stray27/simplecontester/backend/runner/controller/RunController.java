@@ -4,9 +4,7 @@ import com.github.codeboy.piston4j.api.CodeFile;
 import com.github.codeboy.piston4j.api.ExecutionRequest;
 import com.github.codeboy.piston4j.api.ExecutionResult;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +15,7 @@ import ru.stray27.simplecontester.backend.runner.model.RunInstance;
 import ru.stray27.simplecontester.backend.runner.repository.RunInstanceRepository;
 import ru.stray27.simplecontester.backend.runner.service.RunnerService;
 
-import java.util.List;
+import javax.annotation.security.RolesAllowed;
 
 @Slf4j
 @RestController
@@ -29,6 +27,7 @@ public class RunController {
     private RunnerService runnerService;
 
     @GetMapping("/languages")
+    @RolesAllowed({"User", "Admin"})
     public ResponseEntity<?> getLanguages() {
         try {
             return new ResponseEntity<>(runnerService.getLanguages(), HttpStatus.OK);
@@ -39,6 +38,7 @@ public class RunController {
     }
 
     @PostMapping("/run")
+    @RolesAllowed({"User", "Admin"})
     public ResponseEntity<?> run(@RequestBody RunRequest runRequest) {
         try {
             if (!validateRunRequest(runRequest)) {
@@ -72,6 +72,7 @@ public class RunController {
     }
 
     @GetMapping("/run/{id}")
+    @RolesAllowed({"User", "Admin"})
     public ResponseEntity<?> getRunInstanceById(@PathVariable String id) {
         try {
             RunInstance runInstance = repository.findById(Long.parseLong(id)).orElseThrow(() -> new RuntimeException("Id not found"));
